@@ -1,31 +1,50 @@
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, CheckCircle, X, Send, Info, Sparkles, Zap } from "lucide-react"
-import { convertCurrency, formatCurrency } from "../utils/currency.js"
-import { motion, AnimatePresence } from "framer-motion"
-import toast from "react-hot-toast"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertCircle,
+  CheckCircle,
+  X,
+  Send,
+  Info,
+  Sparkles,
+  Zap,
+} from "lucide-react";
+import { convertCurrency, formatCurrency } from "../utils/currency.js";
+import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 
-export default function TransferForm({ accounts, onTransfer, selectedFromAccount, onClose }) {
-  const [fromAccount, setFromAccount] = useState(selectedFromAccount?.id || "")
-  const [toAccount, setToAccount] = useState("")
-  const [amount, setAmount] = useState("")
-  const [note, setNote] = useState("")
-  const [error, setError] = useState("")
-  const [isProcessing, setIsProcessing] = useState(false)
+export default function TransferForm({
+  accounts,
+  onTransfer,
+  selectedFromAccount,
+  onClose,
+}) {
+  const [fromAccount, setFromAccount] = useState(selectedFromAccount?.id || "");
+  const [toAccount, setToAccount] = useState("");
+  const [amount, setAmount] = useState("");
+  const [note, setNote] = useState("");
+  const [error, setError] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const fromAccountData = accounts.find((acc) => acc.id === fromAccount)
-  const toAccountData = accounts.find((acc) => acc.id === toAccount)
+  const fromAccountData = accounts.find((acc) => acc.id === fromAccount);
+  const toAccountData = accounts.find((acc) => acc.id === toAccount);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError("")
-    setIsProcessing(true)
+    e.preventDefault();
+    setError("");
+    setIsProcessing(true);
 
     const processingToast = toast.loading("Processing transfer...", {
       style: {
@@ -34,9 +53,9 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
         borderRadius: "16px",
         border: "1px solid rgba(255, 255, 255, 0.2)",
       },
-    })
+    });
 
-    const transferAmount = Number.parseFloat(amount)
+    const transferAmount = Number.parseFloat(amount);
 
     // Validation
     if (!fromAccount || !toAccount) {
@@ -47,10 +66,10 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
           borderRadius: "16px",
           border: "1px solid rgba(255, 255, 255, 0.2)",
         },
-      })
-      setIsProcessing(false)
-      toast.dismiss(processingToast)
-      return
+      });
+      setIsProcessing(false);
+      toast.dismiss(processingToast);
+      return;
     }
 
     if (fromAccount === toAccount) {
@@ -61,10 +80,10 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
           borderRadius: "16px",
           border: "1px solid rgba(255, 255, 255, 0.2)",
         },
-      })
-      setIsProcessing(false)
-      toast.dismiss(processingToast)
-      return
+      });
+      setIsProcessing(false);
+      toast.dismiss(processingToast);
+      return;
     }
 
     if (!transferAmount || transferAmount <= 0) {
@@ -75,15 +94,15 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
           borderRadius: "16px",
           border: "1px solid rgba(255, 255, 255, 0.2)",
         },
-      })
-      setIsProcessing(false)
-      toast.dismiss(processingToast)
-      return
+      });
+      setIsProcessing(false);
+      toast.dismiss(processingToast);
+      return;
     }
 
     if (transferAmount > fromAccountData.balance) {
-      const errorMessage = `Insufficient balance. Available: ${formatCurrency(fromAccountData.balance, fromAccountData.currency)}, Requested: ${formatCurrency(transferAmount, fromAccountData.currency)}`
-      setError(errorMessage)
+      const errorMessage = `Insufficient balance. Available: ${formatCurrency(fromAccountData.balance, fromAccountData.currency)}, Requested: ${formatCurrency(transferAmount, fromAccountData.currency)}`;
+      setError(errorMessage);
       toast.error(errorMessage, {
         style: {
           background: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
@@ -91,14 +110,14 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
           borderRadius: "16px",
           border: "1px solid rgba(255, 255, 255, 0.2)",
         },
-      })
-      setIsProcessing(false)
-      toast.dismiss(processingToast)
-      return
+      });
+      setIsProcessing(false);
+      toast.dismiss(processingToast);
+      return;
     }
 
     // Simulate processing delay
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const transferData = {
       fromAccount,
@@ -107,24 +126,28 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
       note: note.trim(),
       fromCurrency: fromAccountData.currency,
       toCurrency: toAccountData.currency,
-    }
+    };
 
-    onTransfer(transferData)
+    onTransfer(transferData);
 
-    toast.dismiss(processingToast)
+    toast.dismiss(processingToast);
 
     // Reset form
-    setFromAccount("")
-    setToAccount("")
-    setAmount("")
-    setNote("")
-    setIsProcessing(false)
-  }
+    setFromAccount("");
+    setToAccount("");
+    setAmount("");
+    setNote("");
+    setIsProcessing(false);
+  };
 
   const conversionInfo =
     fromAccountData && toAccountData && amount
-      ? convertCurrency(Number.parseFloat(amount), fromAccountData.currency, toAccountData.currency)
-      : null
+      ? convertCurrency(
+          Number.parseFloat(amount),
+          fromAccountData.currency,
+          toAccountData.currency,
+        )
+      : null;
 
   return (
     <Card className="w-full floating-card relative overflow-hidden">
@@ -140,17 +163,21 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-2xl sm:text-3xl font-bold gradient-text">Transfer Funds</h2>
+                <h2 className="text-xl sm:text-2xl font-bold gradient-text">
+                  Transfer Funds
+                </h2>
                 <Sparkles className="h-5 w-5 text-blue-600" />
               </div>
-              <p className="text-slate-600 text-sm sm:text-base font-medium">Move money between your accounts securely</p>
+              <p className="text-slate-600 text-sm sm:text-base font-medium">
+                Move money between your accounts securely
+              </p>
             </div>
           </div>
           {onClose && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={onClose} 
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
               className="h-12 w-12 p-0 hover:bg-slate-100 rounded-2xl transition-all duration-300 hover:scale-110"
             >
               <X className="h-6 w-6" />
@@ -164,7 +191,10 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
           {/* Enhanced Account Selection */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             <div className="space-y-4">
-              <Label htmlFor="from-account" className="text-base font-bold text-slate-700 flex items-center gap-2">
+              <Label
+                htmlFor="from-account"
+                className="text-base font-bold text-slate-700 flex items-center gap-2"
+              >
                 <Zap className="h-4 w-4 text-blue-600" />
                 From Account
               </Label>
@@ -174,11 +204,16 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
                 </SelectTrigger>
                 <SelectContent className="glass-effect rounded-2xl">
                   {accounts.map((account) => (
-                    <SelectItem key={account.id} value={account.id} className="rounded-xl hover:bg-slate-50 p-4">
+                    <SelectItem
+                      key={account.id}
+                      value={account.id}
+                      className="rounded-xl hover:bg-slate-50 p-4"
+                    >
                       <div className="flex items-center justify-between w-full">
                         <span className="font-semibold">{account.name}</span>
                         <span className="text-sm text-slate-500 ml-3 font-medium">
-                          {account.currency} - {formatCurrency(account.balance, account.currency)}
+                          {account.currency} -{" "}
+                          {formatCurrency(account.balance, account.currency)}
                         </span>
                       </div>
                     </SelectItem>
@@ -188,7 +223,10 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
             </div>
 
             <div className="space-y-4">
-              <Label htmlFor="to-account" className="text-base font-bold text-slate-700 flex items-center gap-2">
+              <Label
+                htmlFor="to-account"
+                className="text-base font-bold text-slate-700 flex items-center gap-2"
+              >
                 <Zap className="h-4 w-4 text-green-600" />
                 To Account
               </Label>
@@ -200,11 +238,16 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
                   {accounts
                     .filter((acc) => acc.id !== fromAccount)
                     .map((account) => (
-                      <SelectItem key={account.id} value={account.id} className="rounded-xl hover:bg-slate-50 p-4">
+                      <SelectItem
+                        key={account.id}
+                        value={account.id}
+                        className="rounded-xl hover:bg-slate-50 p-4"
+                      >
                         <div className="flex items-center justify-between w-full">
                           <span className="font-semibold">{account.name}</span>
                           <span className="text-sm text-slate-500 ml-3 font-medium">
-                            {account.currency} - {formatCurrency(account.balance, account.currency)}
+                            {account.currency} -{" "}
+                            {formatCurrency(account.balance, account.currency)}
                           </span>
                         </div>
                       </SelectItem>
@@ -216,7 +259,10 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
 
           {/* Enhanced Amount Input */}
           <div className="space-y-4">
-            <Label htmlFor="amount" className="text-base font-bold text-slate-700 flex items-center gap-2">
+            <Label
+              htmlFor="amount"
+              className="text-base font-bold text-slate-700 flex items-center gap-2"
+            >
               <Sparkles className="h-4 w-4 text-purple-600" />
               Transfer Amount
             </Label>
@@ -237,7 +283,13 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
                 className="flex items-center gap-3 text-sm text-slate-600 bg-gradient-to-r from-slate-50 to-slate-100 p-4 rounded-2xl border border-white/50"
               >
                 <Info className="h-5 w-5 text-blue-600" />
-                <span className="font-semibold">Available: {formatCurrency(fromAccountData.balance, fromAccountData.currency)}</span>
+                <span className="font-semibold">
+                  Available:{" "}
+                  {formatCurrency(
+                    fromAccountData.balance,
+                    fromAccountData.currency,
+                  )}
+                </span>
               </motion.div>
             )}
           </div>
@@ -260,11 +312,19 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
                         Currency conversion will be applied:
                       </div>
                       <div className="text-xl font-bold gradient-text">
-                        {formatCurrency(Number.parseFloat(amount), fromAccountData.currency)} →{" "}
-                        {formatCurrency(conversionInfo.convertedAmount, toAccountData.currency)}
+                        {formatCurrency(
+                          Number.parseFloat(amount),
+                          fromAccountData.currency,
+                        )}{" "}
+                        →{" "}
+                        {formatCurrency(
+                          conversionInfo.convertedAmount,
+                          toAccountData.currency,
+                        )}
                       </div>
                       <div className="text-sm text-slate-600 font-medium">
-                        Exchange rate: 1 {fromAccountData.currency} = {conversionInfo.fxRate} {toAccountData.currency}
+                        Exchange rate: 1 {fromAccountData.currency} ={" "}
+                        {conversionInfo.fxRate} {toAccountData.currency}
                       </div>
                     </div>
                   </AlertDescription>
@@ -275,7 +335,10 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
 
           {/* Enhanced Note Input */}
           <div className="space-y-4">
-            <Label htmlFor="note" className="text-base font-bold text-slate-700 flex items-center gap-2">
+            <Label
+              htmlFor="note"
+              className="text-base font-bold text-slate-700 flex items-center gap-2"
+            >
               <Info className="h-4 w-4 text-slate-600" />
               Transfer Note (Optional)
             </Label>
@@ -298,9 +361,14 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
                 exit={{ opacity: 0, y: -10, scale: 0.9 }}
                 transition={{ duration: 0.3 }}
               >
-                <Alert variant="destructive" className="glass-effect rounded-2xl border-2 border-red-200/50">
+                <Alert
+                  variant="destructive"
+                  className="glass-effect rounded-2xl border-2 border-red-200/50"
+                >
                   <AlertCircle className="h-6 w-6" />
-                  <AlertDescription className="font-semibold text-base">{error}</AlertDescription>
+                  <AlertDescription className="font-semibold text-base">
+                    {error}
+                  </AlertDescription>
                 </Alert>
               </motion.div>
             )}
@@ -351,13 +419,17 @@ export default function TransferForm({ accounts, onTransfer, selectedFromAccount
                 <div className="absolute inset-0 rounded-full bg-blue-600/20 animate-pulse"></div>
               </div>
               <div className="text-center">
-                <p className="text-xl font-bold gradient-text mb-2">Processing Transfer</p>
-                <p className="text-base text-slate-600 font-medium">Please wait while we securely process your transaction...</p>
+                <p className="text-xl font-bold gradient-text mb-2">
+                  Processing Transfer
+                </p>
+                <p className="text-base text-slate-600 font-medium">
+                  Please wait while we securely process your transaction...
+                </p>
               </div>
             </div>
           </motion.div>
         )}
       </CardContent>
     </Card>
-  )
+  );
 }
